@@ -119,7 +119,7 @@ footer.foot b { color:var(--gold); font-family:"PT Serif", Georgia, serif; font-
 .cell.center { background:var(--center); }
 .cell.goal { background:linear-gradient(145deg, var(--btn1), var(--center)); border-color:var(--gold2); }
 .cell .num { font-size:12px; color:var(--gold2); font-weight:bold; }
-.cell .nm { font-size:clamp(7px, .82vw, 11.5px); line-height:1.12; color:var(--text); word-break:break-word; hyphens:auto; }
+.cell .nm { font-size:clamp(7px, .78vw, 11px); line-height:1.12; color:var(--text); overflow-wrap:anywhere; hyphens:auto; overflow:hidden; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; }
 .cell.last { box-shadow:0 0 0 2px var(--gold) inset; }
 .tokens { position:absolute; top:3px; right:3px; display:flex; flex-wrap:wrap; gap:2px; max-width:60%; justify-content:flex-end; }
 .tok { width:clamp(9px, 1.15vw, 15px); height:clamp(9px, 1.15vw, 15px); border-radius:50%; border:2px solid #fff; box-shadow:0 1px 4px rgba(0,0,0,.5); }
@@ -142,7 +142,11 @@ html[data-lang="kz"] .dice { background:#f2f8f3; color:#1f3328; }
 .pitem { display:flex; align-items:center; gap:10px; padding:8px 10px; border-radius:10px; border:1px solid var(--line-soft); background:var(--input); font-size:14px; }
 .pitem.cur { border-color:var(--gold2); }
 .pitem .dot { width:16px; height:16px; border-radius:50%; border:2px solid #fff; flex-shrink:0; }
-.pitem .pos { margin-left:auto; color:var(--gold2); white-space:nowrap; }
+.pitem > span:nth-child(2) { min-width:0; flex:1; overflow-wrap:anywhere; }
+.pitem .pos { margin-left:auto; color:var(--gold2); text-align:right; font-size:13px; max-width:45%; overflow-wrap:anywhere; }
+.pitem { flex-wrap:nowrap; min-width:0; }
+.side-panel { min-width:0; }
+.side-panel .row .btn { white-space:normal; }
 .log { max-height:220px; overflow:auto; font-size:13px; color:var(--muted); line-height:1.5; }
 
 /* ===== Карточка клетки ===== */
@@ -305,8 +309,10 @@ const I18N = {
 const S = {
   lang: (() => { try { return localStorage.getItem("lila_lang") || "ru"; } catch(e){ return "ru"; } })(),
   user:null, profile:null, member:null, isAdmin:false, hasAccess:false, tab:"game",
-  game:null, gameId:null, setupCount:2, setupPlayers:[]
+  games:{ ru:{ game:null, id:null }, kz:{ game:null, id:null } }, setupCount:2, setupPlayers:[]
 };
+Object.defineProperty(S, "game", { get(){ return S.games[S.lang].game; }, set(v){ S.games[S.lang].game = v; } });
+Object.defineProperty(S, "gameId", { get(){ return S.games[S.lang].id; }, set(v){ S.games[S.lang].id = v; } });
 const t = k => (I18N[S.lang] && I18N[S.lang][k]) || I18N.ru[k] || k;
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const $ = id => document.getElementById(id);
@@ -375,7 +381,7 @@ async function doReset(){
   const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: location.origin + location.pathname });
   if (error) return aMsg(error.message); aMsg(t("linkSent"), true);
 }
-async function doLogout(){ await sb.auth.signOut(); S.user = null; S.game = null; S.gameId = null; authView = "login"; renderAuth(); }
+async function doLogout(){ await sb.auth.signOut(); S.user = null; S.games = { ru:{ game:null, id:null }, kz:{ game:null, id:null } }; authView = "login"; renderAuth(); }
 
 /* ========= Загрузка ========= */
 async function boot(){
@@ -441,7 +447,7 @@ async function startGame(){
   const ps = S.setupPlayers.slice(0, S.setupCount);
   if (ps.some(p => !p.name.trim())) return toast(t("needName"));
   S.game = { players: ps.map((p,i) => ({ name:p.name.trim(), req:p.req.trim(), color:COLORS[i], pos:68, entered:false, done:false, path:[] })),
-             turn:0, sixes:[], last:null, dice:null, msg:"", log:[], created:new Date().toISOString() };
+             turn:0, sixes:[], last:null, dice:null, msg:"", log:[], lang:S.lang, created:new Date().toISOString() };
   S.gameId = null; S.setupPlayers = [];
   await saveGame(); renderMain();
 }
@@ -493,7 +499,7 @@ function renderGame(m){
 /* ========= Правила хода ========= */
 let rolling = false;
 async function rollDice(){
-  const g = S.game; if (!g || rolling) return;
+  const g = S.game; if (!g || rolling) return; const slotLang = S.lang;
   const p = g.players[g.turn]; if (p.done) return nextTurn();
   rolling = true;
   const r = 1 + Math.floor(Math.random() * 6);
@@ -518,7 +524,7 @@ async function rollDice(){
     nextTurn();
   }
   rolling = false;
-  await saveGame(); renderMain();
+  await saveGame(false, slotLang); renderMain();
   if (showCells.length) showSequence(showCells, p);
 }
 function addPath(p, cell, via){ p.path.push({ cell, via, notes:"" }); }
@@ -597,18 +603,18 @@ async function endGame(){
 }
 
 /* ========= Сохранение ========= */
-async function saveGame(finish){
-  const g = S.game; if (!g) return;
+async function saveGame(finish, slotLang){
+  const slot = S.games[slotLang || S.lang], g = slot.game; if (!g) return;
   const done = finish || g.players.every(p => p.done);
-  const row = { owner_id:S.user.id, title:g.players.map(p => p.name).join(", "), state:g, is_finished:done, updated_at:new Date().toISOString() };
+  const row = { owner_id:S.user.id, lang:g.lang || S.lang, title:g.players.map(p => p.name).join(", "), state:g, is_finished:done, updated_at:new Date().toISOString() };
   try {
-    if (S.gameId) await sb.from("lila_games").update(row).eq("id", S.gameId);
-    else { const { data } = await sb.from("lila_games").insert(row).select("id").single(); if (data) S.gameId = data.id; }
+    if (slot.id) await sb.from("lila_games").update(row).eq("id", slot.id);
+    else { const { data } = await sb.from("lila_games").insert(row).select("id").single(); if (data) slot.id = data.id; }
   } catch(e) { console.warn(e); }
 }
 async function renderGames(m){
   m.innerHTML = `<div class="empty">${t("loading")}</div>`;
-  const { data } = await sb.from("lila_games").select("id,title,is_finished,updated_at").eq("owner_id", S.user.id).order("updated_at", { ascending:false });
+  const { data } = await sb.from("lila_games").select("id,title,is_finished,updated_at").eq("owner_id", S.user.id).eq("lang", S.lang).order("updated_at", { ascending:false });
   if (!data || !data.length) return m.innerHTML = `<div class="card empty">${t("noGames")}</div>`;
   m.innerHTML = `<div class="card table-wrap"><table class="list"><tr><th>${t("players")}</th><th></th><th></th><th></th></tr>
     ${data.map(g => `<tr><td><b>${esc(g.title)}</b><br><span class="muted" style="font-size:12px">${new Date(g.updated_at).toLocaleString("ru-RU")}</span></td>
@@ -618,7 +624,7 @@ async function renderGames(m){
 }
 async function loadGame(id){
   const { data } = await sb.from("lila_games").select("*").eq("id", id).maybeSingle();
-  if (!data) return; S.game = data.state; S.gameId = data.id; S.tab = "game"; renderApp();
+  if (!data) return; S.games[data.lang || "ru"] = { game:data.state, id:data.id }; S.lang = data.lang || "ru"; try { localStorage.setItem("lila_lang", S.lang); } catch(e){} document.documentElement.dataset.lang = S.lang; document.title = CONFIG.name[S.lang]; S.tab = "game"; renderApp();
 }
 async function deleteGame(id){
   if (!confirm(t("confirmDel"))) return;
