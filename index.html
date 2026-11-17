@@ -9,6 +9,9 @@
 <script src="cells-1.js"></script>
 <script src="cells-2.js"></script>
 <script src="cells-3.js"></script>
+<script src="cells-uz-1.js"></script>
+<script src="cells-uz-2.js"></script>
+<script src="cells-uz-3.js"></script>
 <style>
 /* ===== Русская тема — фиолетово-серая, казахская — зелёно-серая ===== */
 :root, html[data-lang="ru"] {
@@ -25,6 +28,14 @@ html[data-lang="kz"] {
   --active1:rgba(90,150,115,.55); --active2:rgba(65,115,88,.35); --btn1:#4f8a68; --btn2:#3b6d51; --input:rgba(0,0,0,.22);
   --cell:#33463c; --cell2:#2c3d34; --center:#41604f;
 }
+html[data-lang="uz"] {
+  --bg1:#16212a; --bg2:#22323d; --panel1:#2b414d; --panel2:#1c2a33; --card1:#31505d; --card2:#233843;
+  --glow:rgba(120,200,215,.18); --gold:#cdeef3; --gold2:#9fd3dc; --text:#eef5f6; --muted:#a9c3c9;
+  --line:rgba(150,210,220,.50); --line-soft:rgba(150,210,220,.22); --hover:rgba(120,200,215,.13);
+  --active1:rgba(70,150,165,.55); --active2:rgba(50,115,128,.35); --btn1:#3f8796; --btn2:#2f6a76; --input:rgba(0,0,0,.22);
+  --cell:#2f4652; --cell2:#283d48; --center:#3c5f6d;
+}
+html[data-lang="uz"] .dice { background:#f0f8f9; color:#1d3640; }
 * { box-sizing:border-box; }
 html, body { margin:0; }
 body { font-family:Arial, Helvetica, sans-serif; color:var(--text); min-height:100vh;
@@ -186,6 +197,9 @@ html[data-lang="kz"] .dice { background:#f2f8f3; color:#1f3328; }
 .auth-card { width:440px; max-width:100%; padding:36px; text-align:center; border:1px solid var(--line); border-radius:20px;
   background: radial-gradient(circle at 50% 0%, var(--glow), transparent 45%), linear-gradient(145deg, var(--card1), var(--card2)); box-shadow:0 20px 70px rgba(0,0,0,.4); }
 .auth-card.wide { width:600px; }
+.auth-card .logo { display:block !important; text-align:center !important; margin-bottom:16px !important; }
+.auth-card .logo-symbol { margin:0 auto 12px !important; width:92px !important; height:92px !important; font-size:42px !important; }
+.auth-card .logo-title { font-size:24px !important; } .auth-card .logo-subtitle { font-size:17px !important; }
 .auth-card h2 { margin:6px 0 16px; }
 .auth-card input { margin:6px 0; padding:14px; font-size:16px; }
 .auth-card .lang-switch { width:max-content; margin:0 auto 16px; }
@@ -241,9 +255,9 @@ html[data-lang="kz"] .dice { background:#f2f8f3; color:#1f3328; }
 <script>
 /* ========= НАСТРОЙКИ ========= */
 const CONFIG = {
-  name: { ru:"Игра Лила", kz:"Лила ойыны" },
-  logoTitle: { ru:"Лила", kz:"Лила" },
-  logoSubtitle: { ru:"игра самопознания", kz:"өзін-өзі тану ойыны" },
+  name: { ru:"Игра Лила", kz:"Лила ойыны", uz:"Лила ўйини" },
+  logoTitle: { ru:"Лила", kz:"Лила", uz:"Лила" },
+  logoSubtitle: { ru:"игра самопознания", kz:"өзін-өзі тану ойыны", uz:"ўзликни англаш ўйини" },
   logoSymbol: "🪷",
   site: "",
   supabaseUrl: "https://shoaqhkkbnpppunpfknt.supabase.co",
@@ -268,7 +282,14 @@ const LINK_NOTE = {
     45:"Өзгеруге көмектесетін білімге сүйеніңіз, көмектеспей қалса — жаңасын іздеңіз.", 46:"Түйсігіңізге сеніңіз — ол бақытқа жетелейді.", 54:"Махаббаттан әрекет етіңіз: сіз арқылы жоғары күш көрінеді.",
     12:"Ештеңені кейінге қалдырмаңыз: бақытты осы жерде және қазір болуға болады.", 16:"Өзгенің қалауымен өмір сүруді қойып, өзіңіз не қалайтыныңызды түсініңіз.", 24:"Сізді кім және не тежейтініне қараңыз.",
     29:"Айналадағылардың бәрін емес, өзіңізді тыңдаңыз: бақыт рецепті әркімде өзінше.", 44:"Тек ойламай, жүрекпен сезініңіз.", 52:"Өзіңізге де, өзгеге де қысым жасамаңыз, қиын болашақ тудыратын ұмтылысқа берілмеңіз.",
-    55:"Өзіңізге де, өзгеге де қалағандай өмір сүруге рұқсат беріңіз.", 61:"Ойларыңызға назар аударыңыз. Жүрегіңіз білген нәрсеге күмәнданбаңыз.", 63:"Үлкен қайта қарау уақыты: бәріне негізінен жаңаша қараңыз. Алаңдағы ең ұзын жылан.", 72:"Түсінгенді Жерде іске асыратын уақыт келді." }
+    55:"Өзіңізге де, өзгеге де қалағандай өмір сүруге рұқсат беріңіз.", 61:"Ойларыңызға назар аударыңыз. Жүрегіңіз білген нәрсеге күмәнданбаңыз.", 63:"Үлкен қайта қарау уақыты: бәріне негізінен жаңаша қараңыз. Алаңдағы ең ұзын жылан.", 72:"Түсінгенді Жерде іске асыратын уақыт келді." },
+  uz: { 10:"Эътибор қаерга қаратилса, қувват ўша ёққа оқади. Покланиш ишончга кўтаради.", 17:"Бошқаларни тушуниш, улар ўрнига ҳаётини ҳал қилмаслик — яратувчанликка йўл. Майдондаги энг узун ўқ.",
+    20:"Берганингизда мувозанатга келасиз. Сизни мувозанатдан нима чиқаришига қаранг.", 22:"Йўлингизга шубҳа қилманг: ўз табиатингиз билан яшаш фикрни тиниқ қилади.",
+    27:"Мақсад қанча юксак ва ёруғ бўлса, рўёбга чиқиш шунча ёрқин.", 28:"Ҳозир қийин бўлса ҳам, келажак учун фойдалисини танланг.", 37:"Билимни тажрибада қўлланг — шукр келади.",
+    45:"Ўзгаришга ёрдам берадиган билимга таянинг, ёрдам бермай қолса — янгисини изланг.", 46:"Ички сезгингизга ишонинг — у бахтга етаклайди.", 54:"Муҳаббатдан ҳаракат қилинг: сиз орқали олий куч намоён бўлади.",
+    12:"Ҳеч нарсани кейинга қолдирманг: бахтли бўлиш шу ерда ва ҳозир мумкин.", 16:"Бошқаларнинг хоҳиши билан яшашни бас қилиб, ўзингиз нимани хоҳлашингизни тушунинг.", 24:"Сизни ким ва нима тўхтатаётганига қаранг.",
+    29:"Атрофдагиларнинг ҳаммасини эмас, ўзингизни тингланг: бахт рецепти ҳар кимда ўзгача.", 44:"Фақат ўйламанг — юрак билан ҳис қилинг.", 52:"Ўзингизга ҳам, бошқаларга ҳам босим ўтказманг, оғир келажак яратадиган шошилишларга берилманг.",
+    55:"Ўзингизга ҳам, бошқаларга ҳам хоҳлаганидек яшашга рухсат беринг.", 61:"Фикрларингизга эътибор беринг. Юрагингиз билган нарсага шубҳа қилманг.", 63:"Катта қайта кўриб чиқиш вақти: ҳаммасига асосидан янгича қаранг. Майдондаги энг узун илон.", 72:"Тушунганингизни Ерда амалга ошириш вақти келди." }
 };
 const COLORS = ["#ff6b6b","#ffd43b","#4dabf7","#69db7c","#f783ac","#ffa94d","#ffffff","#9775fa","#3bc9db","#a9e34b","#e8590c","#868e96"];
 const MAX_PLAYERS = 12;
@@ -328,14 +349,40 @@ const I18N = {
     teacherLinked:"Сіз ұстазға байланыстырылдыңыз", codeNotFound:"Мұндай кодпен ұстаз табылмады.", users:"Пайдаланушылар", name:"Аты-жөні", role:"Тариф", access:"Қолжетімділік", actions:"Әрекет",
     give:"Ашу", forever:"Мерзімсіз", closeAcc:"Жабу", noStudents:"Әзірге шәкірт жоқ.",
     disclaimer:"Ойын — өзін-өзі тану құралы. Ол психолог немесе дәрігер көмегін алмастырмайды.", tapHint:"Сипаттамасын оқу үшін кез келген торды басыңыз.", rollShort:"Лақтыру"
+  },
+  uz: {
+    loginTitle:"Платформага кириш", email:"Email", password:"Парол", password2:"Паролни такрорланг", enter:"Кириш", forgot:"Паролни унутдингизми?", or:"ёки",
+    registerBtn:"Рўйхатдан ўтиш", register:"Рўйхатдан ўтиш", haveAccount:"← Киришга қайтиш", resetTitle:"Паролни тиклаш", sendLink:"Ҳавола юбориш",
+    lastName:"Фамилия", firstName:"Исм", phone:"Телефон", teacherCodeOpt:"Устоз коди (бўлса)", createAcc:"Аккаунт очиш", logout:"Чиқиш",
+    fillAll:"Барча майдонларни тўлдиринг.", badPhone:"Телефон +998901234567 шаклида.", pwShort:"Парол камида 6 белги.", pwMismatch:"Пароллар мос келмади.",
+    wrongLogin:"Email ёки парол нотўғри.", regOk:"Рўйхатдан ўтиш якунланди.", checkEmail:"Аккаунт очилди. Хатдаги ҳавола орқали email-ни тасдиқлаб, киринг.",
+    linkSent:"Ҳавола почтага юборилди.", notMember:"Сиз рўйхатдан ўтмагансиз.", footer:"Барча ҳуқуқлар ҳимояланган", loading:"Юкланмоқда…",
+    tabGame:"Ўйин", tabGames:"Менинг ўйинларим", tabRules:"Қоидалар", tabCells:"Майдон катаклари", tabAccess:"Рухсат", tabStudents:"Шогирдларим", tabAdmin:"Админ",
+    noAccessTitle:"Рухсат ҳозирча ёпиқ", noAccessText:"Тўловдан кейин рухсатни администратор ёки устозингиз очади.", goAccess:"«Рухсат» бўлимига ўтиш",
+    newGame:"Янги ўйин", playersCount:"Ўйинчилар сони", playerName:"Ўйинчи исми", playerReq:"Сўров — жавобини излаётган ўзингиз ҳақингиздаги савол", start:"Ўйинни бошлаш",
+    reqHint:"«Қандай қилиб мен…», «Менга … ҳақида нимани тушуниш муҳим», «Менга нима халақит беради…» деб бошлаган яхши. Бир ўйин — бир сўров.",
+    needName:"Барча ўйинчиларнинг исмини ёзинг.", turnOf:"Навбат", roll:"Кубикни ташлаш", waiting:"бошланишда — олтиликни кутмоқда", finished:"йўлини якунлади",
+    needSix:"Ўйинга кириш учун олтилик керак.", entered:"Олтилик! Ўйинчи ўйинга киради: «Туғилиш»дан ўтиб, 6-катакка туради. Яна ташланг.",
+    sixAgain:"Олтилик! Яна ташланг — очколар қўшилади.", burned:"Кетма-кет учта олтилик куйиб кетади. Фақат кейинги ташлаш ҳисобланади.",
+    skip:"72-катаккача қолгандан кўп тушди — юриш ўтказиб юборилади.", moved:"катакка ўтади:", arrowUp:"Ўқ кўтаради:", snakeDown:"Илон туширади:",
+    reachedGoal:"Коинот онгига етди! Йўл якунланди.", allDone:"Барча ўйинчилар йўлини якунлади.", path:"Ўйинчилар йўли", printRes:"Якунни юклаб олиш (PDF)",
+    questions:"Тадқиқот учун саволлар", practice:"Машқ", notes:"Ўйинчи фикрлари", notesPh:"Сўровингиз бўйича нима акс садо берганини ёзинг…", save:"Сақлаш", close:"Ёпиш",
+    next:"Давом этиш", arrowNote:"Ўқ", snakeNote:"Илон", legendUp:"ўқ — кўтаради", legendDown:"илон — туширади", saved:"Сақланди", error:"Хато",
+    continueG:"Давом эттириш", del:"Ўчириш", noGames:"Сақланган ўйинлар ҳозирча йўқ.", confirmDel:"Ўйинни бутунлай ўчирасизми?", players:"Ўйинчилар", request:"Сўров", cell:"Катак",
+    endGame:"Ўйинни якунлаш", confirmEnd:"Ўйинни якунлаб, сақлайсизми?", gameDone:"якунланган", gameOn:"давом этмоқда", startPos:"бошланиш",
+    yourRole:"Тарифингиз", yourStatus:"Рухсатингиз", active:"Очиқ", inactive:"Ёпиқ", until:"гача", unlimited:"муддатсиз", roleStudent:"Шогирд", roleTeacher:"Устоз", roleAdmin:"Администратор",
+    yourCode:"Устоз кодингиз", codeHint:"Бу кодни шогирдларингизга беринг — улар рўйхатдан ўтишда уни киритиб, сизнинг рўйхатингизга тушади.", enterCode:"Устозингиз коди", attach:"Боғлаш",
+    teacherLinked:"Сиз устозга боғландингиз", codeNotFound:"Бундай кодли устоз топилмади.", users:"Фойдаланувчилар", name:"Исм-фамилия", role:"Тариф", access:"Рухсат", actions:"Амаллар",
+    give:"Очиш", forever:"Муддатсиз", closeAcc:"Ёпиш", noStudents:"Ҳозирча шогирдлар йўқ.",
+    disclaimer:"Ўйин — ўзликни англаш воситаси. У психолог ёки шифокор ёрдамининг ўрнини босмайди.", tapHint:"Тавсифини ўқиш учун исталган катакни босинг.", rollShort:"Ташлаш"
   }
 };
 
 /* ========= Состояние ========= */
 const S = {
-  lang: (() => { try { return localStorage.getItem("lila_lang") || "ru"; } catch(e){ return "ru"; } })(),
+  lang: (() => { try { const l = localStorage.getItem("lila_lang"); return ["ru","kz","uz"].includes(l) ? l : "ru"; } catch(e){ return "ru"; } })(),
   user:null, profile:null, member:null, isAdmin:false, hasAccess:false, tab:"game",
-  games:{ ru:{ game:null, id:null }, kz:{ game:null, id:null } }, setupCount:2, setupPlayers:[]
+  games:{ ru:{ game:null, id:null }, kz:{ game:null, id:null }, uz:{ game:null, id:null } }, setupCount:2, setupPlayers:[]
 };
 Object.defineProperty(S, "game", { get(){ return S.games[S.lang].game; }, set(v){ S.games[S.lang].game = v; } });
 Object.defineProperty(S, "gameId", { get(){ return S.games[S.lang].id; }, set(v){ S.games[S.lang].id = v; } });
@@ -347,10 +394,10 @@ function toast(m){ const el = $("toast"); el.textContent = m; el.classList.remov
 let rerender = () => {};
 function setLang(l){
   S.lang = l; try { localStorage.setItem("lila_lang", l); } catch(e){}
-  document.documentElement.dataset.lang = l; document.documentElement.lang = l === "kz" ? "kk" : "ru";
+  document.documentElement.dataset.lang = l; document.documentElement.lang = ({ kz:"kk", uz:"uz-Cyrl" })[l] || "ru";
   document.title = CONFIG.name[l]; rerender(); if (openCard.last) openCard.last();
 }
-function langSwitch(){ return `<div class="lang-switch"><button class="${S.lang==='kz'?'on':''}" onclick="setLang('kz')">Қазақша</button><button class="${S.lang==='ru'?'on':''}" onclick="setLang('ru')">Русский</button></div>`; }
+function langSwitch(){ return `<div class="lang-switch"><button class="${S.lang==='kz'?'on':''}" onclick="setLang('kz')">Қазақша</button><button class="${S.lang==='ru'?'on':''}" onclick="setLang('ru')">Русский</button><button class="${S.lang==='uz'?'on':''}" onclick="setLang('uz')">Ўзбекча</button></div>`; }
 function logoHtml(){ return `<div class="logo"><div class="logo-symbol">${CONFIG.logoSymbol}</div><div><div class="logo-title">${esc(CONFIG.logoTitle[S.lang])}</div><div class="logo-subtitle">${esc(CONFIG.logoSubtitle[S.lang])}</div></div></div>`; }
 function footerHtml(){ const site = CONFIG.site ? ` · <a href="https://${esc(CONFIG.site)}" target="_blank" rel="noopener">${esc(CONFIG.site)}</a>` : "";
   return `<footer class="foot"><b>${esc(CONFIG.name[S.lang])}</b>${site}<br>© ${new Date().getFullYear()} · ${t("footer")}</footer>`; }
@@ -407,7 +454,7 @@ async function doReset(){
   const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: location.origin + location.pathname });
   if (error) return aMsg(error.message); aMsg(t("linkSent"), true);
 }
-async function doLogout(){ await sb.auth.signOut(); S.user = null; S.games = { ru:{ game:null, id:null }, kz:{ game:null, id:null } }; authView = "login"; renderAuth(); }
+async function doLogout(){ await sb.auth.signOut(); S.user = null; S.games = { ru:{ game:null, id:null }, kz:{ game:null, id:null }, uz:{ game:null, id:null } }; authView = "login"; renderAuth(); }
 
 /* ========= Загрузка ========= */
 async function boot(){
@@ -688,7 +735,17 @@ const RULES = {
     "68-тордан аттап кетсе, ойыншы соңғы қатармен жүреді. 72-торға дейін қалғаннан көп түссе, жүріс өткізіледі.",
     "72-тордан жылан 51-торға — «Жерге» қайтарады.",
     "Фишка дәл 68-торға — «Ғарыштық санаға» тұрғанда жол аяқталады.",
-    "Ойыншы 68-ге тез жетіп, сұрағының жауабын әлі түсінбесе, жүргізуші жолды қайта өтуді ұсына алады."]
+    "Ойыншы 68-ге тез жетіп, сұрағының жауабын әлі түсінбесе, жүргізуші жолды қайта өтуді ұсына алады."],
+  uz:["Барча фишкалар 68-катакка — «Коинот онги»га қўйилади: ўйин шу ердан бошланади ва шу ерга қайтади.",
+    "Ўйинчилар навбат билан кубик ташлайди. Ўйинга кириш учун олтилик керак: ўйинчи 1-катак «Туғилиш»дан ўтиб, 6-катак «Адашиш»га туради.",
+    "Олтилик доим яна ташлаш ҳуқуқини беради. Олтиликлар ва кейинги ташлаш очколари қўшилиб, фишка ҳаммасини бирданига юради.",
+    "Кетма-кет учта олтилик куйиб кетади: фақат кейинги ташлаш ҳисобланади.",
+    "Олтилик дарҳол Коинот онгига олиб борса (масалан, 62-катакдан ёки 54-катакдаги ўқ орқали), йўл қўшимча ташлашсиз якунланади.",
+    "Ўқнинг бошига тушган ўйинчи у бўйлаб кўтарилади; илоннинг бошига тушса — думига тушади. Иккала карточка очилади: қаерга тушгани ва қаерга олиб боргани.",
+    "68-катакдан ўтиб кетса, ўйинчи охирги қатор бўйлаб юради. 72-катаккача қолгандан кўп тушса, юриш ўтказиб юборилади.",
+    "72-катакдан илон 51-катакка — «Ер»га қайтаради.",
+    "Фишка аниқ 68-катакка — «Коинот онги»га тушганда йўл якунланади.",
+    "Ўйинчи 68 га тез етиб, сўровининг жавобини ҳали тушунмаган бўлса, бошловчи йўлни қайта ўтишни таклиф қилиши мумкин."]
 };
 function renderRules(m){
   const arrows = Object.entries(ARROWS).map(([a,b]) => `<li>${a} «${esc(C(+a).name)}» → ${b} «${esc(C(b).name)}»</li>`).join("");
@@ -741,9 +798,9 @@ async function setAccess(id, unlimited){
 async function setRole(id, role){ const { data } = await sb.rpc("lila_set_role", { p_user:id, p_role:role }); toast(data === "ok" ? t("saved") : t("error")); }
 
 /* ========= Старт ========= */
-document.documentElement.dataset.lang = S.lang; document.documentElement.lang = S.lang === "kz" ? "kk" : "ru"; document.title = CONFIG.name[S.lang];
+document.documentElement.dataset.lang = S.lang; document.documentElement.lang = ({ kz:"kk", uz:"uz-Cyrl" })[S.lang] || "ru"; document.title = CONFIG.name[S.lang];
 sb.auth.onAuthStateChange(ev => { if (ev === "PASSWORD_RECOVERY") setTimeout(async () => {
-  const np = prompt(S.lang === "kz" ? "Жаңа құпиясөз (кемінде 6 таңба):" : "Новый пароль (минимум 6 символов):");
+  const np = prompt(({ kz:"Жаңа құпиясөз (кемінде 6 таңба):", uz:"Янги парол (камида 6 белги):" })[S.lang] || "Новый пароль (минимум 6 символов):");
   if (np && np.length >= 6) { await sb.auth.updateUser({ password:np }); toast(t("saved")); boot(); } }, 300); });
 boot();
 </script>
