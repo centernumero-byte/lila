@@ -306,7 +306,7 @@ const I18N = {
     wrongLogin:"Неверный email или пароль.", regOk:"Регистрация завершена.", checkEmail:"Аккаунт создан. Подтвердите email по ссылке в письме и войдите.",
     linkSent:"Ссылка отправлена на почту.", notMember:"Вы не зарегистрированы.", footer:"Все права защищены", loading:"Загрузка…",
     tabGame:"Игра", tabGames:"Мои игры", tabRules:"Правила", tabCells:"Клетки поля", tabAccess:"Доступ", tabStudents:"Мои ученики", tabAdmin:"Админ",
-    noAccessTitle:"Доступ пока закрыт", noAccessText:"Доступ открывает администратор или ваш учитель после оплаты.", goAccess:"Перейти в «Доступ»",
+    noAccessTitle:"Доступ пока закрыт", noAccessText:"Доступ к игре закрыт. Обратитесь к администратору.", emailExists:"Этот email уже зарегистрирован. Войдите или восстановите пароль.", regError:"Не удалось зарегистрироваться. Попробуйте ещё раз.", goAccess:"Перейти в «Доступ»",
     newGame:"Новая игра", playersCount:"Количество игроков", playerName:"Имя игрока", playerReq:"Запрос — вопрос о себе, на который ищете ответ", start:"Начать игру",
     reqHint:"Хорошо начинать со слов «Как мне…», «Что мне важно понять о…», «Что мешает мне…». Одна игра — один запрос.",
     needName:"Впишите имена всех игроков.", turnOf:"Ходит", roll:"Бросить кубик", waiting:"на старте — ждёт шестёрку", finished:"завершил(а) путь",
@@ -332,7 +332,7 @@ const I18N = {
     wrongLogin:"Email немесе құпиясөз қате.", regOk:"Тіркелу аяқталды.", checkEmail:"Аккаунт ашылды. Хаттағы сілтеме арқылы email-ді растап, кіріңіз.",
     linkSent:"Сілтеме поштаға жіберілді.", notMember:"Сіз тіркелмегенсіз.", footer:"Барлық құқықтар қорғалған", loading:"Жүктелуде…",
     tabGame:"Ойын", tabGames:"Менің ойындарым", tabRules:"Ережелер", tabCells:"Алаң торлары", tabAccess:"Қолжетімділік", tabStudents:"Шәкірттерім", tabAdmin:"Әкімші",
-    noAccessTitle:"Қолжетімділік әзірге жабық", noAccessText:"Төлемнен кейін қолжетімділікті әкімші немесе ұстазыңыз ашады.", goAccess:"«Қолжетімділік» бөліміне өту",
+    noAccessTitle:"Қолжетімділік әзірге жабық", noAccessText:"Ойынға қолжетімділік жабық. Әкімшіге хабарласыңыз.", emailExists:"Бұл email тіркелген. Кіріңіз немесе құпиясөзді қалпына келтіріңіз.", regError:"Тіркелу сәтсіз аяқталды. Қайталап көріңіз.", goAccess:"«Қолжетімділік» бөліміне өту",
     newGame:"Жаңа ойын", playersCount:"Ойыншылар саны", playerName:"Ойыншының аты", playerReq:"Сұрақ (запрос) — жауабын іздейтін өзіңіз туралы сұрақ", start:"Ойынды бастау",
     reqHint:"«Мен қалай…», «Маған … туралы не түсіну маңызды», «Маған не кедергі…» деп бастаған жақсы. Бір ойын — бір сұрақ.",
     needName:"Барлық ойыншының атын жазыңыз.", turnOf:"Кезек", roll:"Текшені лақтыру", waiting:"бастауда — алтылықты күтеді", finished:"жолын аяқтады",
@@ -358,7 +358,7 @@ const I18N = {
     wrongLogin:"Email ёки парол нотўғри.", regOk:"Рўйхатдан ўтиш якунланди.", checkEmail:"Аккаунт очилди. Хатдаги ҳавола орқали email-ни тасдиқлаб, киринг.",
     linkSent:"Ҳавола почтага юборилди.", notMember:"Сиз рўйхатдан ўтмагансиз.", footer:"Барча ҳуқуқлар ҳимояланган", loading:"Юкланмоқда…",
     tabGame:"Ўйин", tabGames:"Менинг ўйинларим", tabRules:"Қоидалар", tabCells:"Майдон катаклари", tabAccess:"Рухсат", tabStudents:"Шогирдларим", tabAdmin:"Админ",
-    noAccessTitle:"Рухсат ҳозирча ёпиқ", noAccessText:"Тўловдан кейин рухсатни администратор ёки устозингиз очади.", goAccess:"«Рухсат» бўлимига ўтиш",
+    noAccessTitle:"Рухсат ҳозирча ёпиқ", noAccessText:"Ўйинга рухсат ёпиқ. Администраторга мурожаат қилинг.", emailExists:"Бу email рўйхатдан ўтган. Киринг ёки паролни тикланг.", regError:"Рўйхатдан ўтиб бўлмади. Қайта уриниб кўринг.", goAccess:"«Рухсат» бўлимига ўтиш",
     newGame:"Янги ўйин", playersCount:"Ўйинчилар сони", playerName:"Ўйинчи исми", playerReq:"Сўров — жавобини излаётган ўзингиз ҳақингиздаги савол", start:"Ўйинни бошлаш",
     reqHint:"«Қандай қилиб мен…», «Менга … ҳақида нимани тушуниш муҳим», «Менга нима халақит беради…» деб бошлаган яхши. Бир ўйин — бир сўров.",
     needName:"Барча ўйинчиларнинг исмини ёзинг.", turnOf:"Навбат", roll:"Кубикни ташлаш", waiting:"бошланишда — олтиликни кутмоқда", finished:"йўлини якунлади",
@@ -445,9 +445,18 @@ async function doRegister(){
   if (p1.length < 6) return aMsg(t("pwShort"));
   if (p1 !== p2) return aMsg(t("pwMismatch"));
   try { if (code) localStorage.setItem("lila_pending_code", code); } catch(e){}
-  const { data, error } = await sb.auth.signUp({ email, password:p1, options:{ data:{ first_name:first, last_name:last, phone, platform:"lila" }, emailRedirectTo: location.origin + location.pathname } });
-  if (error) return aMsg(error.message);
-  if (data.session) { aMsg(t("regOk"), true); await boot(); } else aMsg(t("checkEmail"), true);
+  // Регистрация без письма-подтверждения (серверная функция lila-signup), доступ к игре открывает только администратор
+  const { data, error } = await sb.functions.invoke("lila-signup", { body:{ email, password:p1, first_name:first, last_name:last, phone } });
+  const st = error ? "error" : (data && data.status);
+  if (st === "ok" || st === "exists") {
+    const r = await sb.auth.signInWithPassword({ email, password:p1 });
+    if (r.error) return aMsg(st === "exists" ? t("emailExists") : t("regError"));
+    if (st === "exists") await sb.rpc("lila_self_register");
+    aMsg(t("regOk"), true); return boot();
+  }
+  if (st === "bad_email") return aMsg(t("email"));
+  if (st === "bad_password") return aMsg(t("pwShort"));
+  return aMsg(t("regError"));
 }
 async function doReset(){
   const email = $("pEmail").value.trim().toLowerCase(); if (!email) return aMsg(t("fillAll"));
@@ -474,7 +483,8 @@ async function boot(){
 }
 const TAB_ICONS = { game:"🎲", games:"📜", rules:"📖", cells:"🪷", access:"🔑", students:"👥", admin:"⚙️" };
 function tabsList(){
-  const l = [["game","tabGame"],["games","tabGames"],["rules","tabRules"],["cells","tabCells"],null,["access","tabAccess"]];
+  const l = [["game","tabGame"],["games","tabGames"],["rules","tabRules"],["cells","tabCells"]];
+  if (S.isAdmin || S.member?.lila_role === "teacher") l.push(null, ["access","tabAccess"]);
   if (S.member?.lila_role === "teacher") l.push(["students","tabStudents"]);
   if (S.isAdmin) l.push(["admin","tabAdmin"]);
   return l;
@@ -490,7 +500,7 @@ function renderApp(){
     <section class="main"><div class="topbar"><h1>${esc(tabTitle())}</h1>${langSwitch()}</div><div id="main"></div>${footerHtml()}</section></div>`;
   renderMain();
 }
-function noAccessHtml(){ return `<div class="card empty"><div style="font-size:46px">🔒</div><h2>${t("noAccessTitle")}</h2><p>${t("noAccessText")}</p><button class="btn" onclick="go('access')">${t("goAccess")}</button></div>`; }
+function noAccessHtml(){ return `<div class="card empty"><div style="font-size:46px">🔒</div><h2>${t("noAccessTitle")}</h2><p>${t("noAccessText")}</p></div>`; }
 function renderMain(){
   const m = $("main"); if (!m) return;
   if (S.tab === "rules") return renderRules(m);
