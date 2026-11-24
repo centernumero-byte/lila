@@ -244,6 +244,33 @@ html[data-lang="kz"] .dice { background:#f2f8f3; color:#1f3328; }
   .modal .row:last-child { position:sticky; bottom:-18px; background:linear-gradient(transparent, var(--card2) 35%); padding:14px 0 4px; margin-bottom:-4px; }
   .modal .row:last-child .btn { flex:1; padding:14px; }
 }
+/* ===== Маленький переключатель языка ===== */
+.account { display:flex; align-items:center; gap:10px; font-size:13px; color:var(--muted); }
+.account .mail { max-width:220px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.lang { position:relative; }
+.lang-btn { border:1px solid var(--line-soft); background:var(--input); color:var(--gold); border-radius:999px; padding:4px 10px; font-size:12px; cursor:pointer; letter-spacing:.5px; }
+.lang-btn:hover { border-color:var(--gold2); }
+.lang-menu { position:absolute; right:0; top:calc(100% + 6px); min-width:130px; border:1px solid var(--line); border-radius:12px; padding:4px; z-index:60;
+  background:linear-gradient(145deg, var(--card1), var(--card2)); box-shadow:0 10px 30px rgba(0,0,0,.4); }
+.lang-menu button { display:block; width:100%; text-align:left; border:0; background:transparent; color:var(--text); padding:8px 10px; border-radius:8px; cursor:pointer; font-size:14px; }
+.lang-menu button:hover { background:var(--hover); } .lang-menu button.on { color:var(--gold); }
+.auth-lang { position:fixed; top:14px; right:16px; z-index:50; }
+@media (max-width:860px){ .topbar { flex-direction:column-reverse; align-items:flex-start; } .account { align-self:flex-end; } .account .mail { max-width:170px; } }
+
+/* ===== Игра по ссылке ===== */
+.room-shell { flex:1; max-width:1240px; width:100%; margin:0 auto; padding:8px; display:flex; flex-direction:column; }
+.room-head { display:flex; align-items:center; gap:12px; justify-content:space-between; padding:10px 16px; margin-bottom:12px; border:1px solid var(--line); border-radius:16px;
+  background: radial-gradient(circle at 50% 8%, var(--glow), transparent 40%), linear-gradient(180deg, var(--panel1), var(--panel2)); }
+.room-head .logo { display:flex; align-items:center; gap:12px; text-align:left; margin:0; }
+.room-head .logo-symbol { width:48px; height:48px; font-size:24px; margin:0; }
+.room-head .logo-title { font-size:17px; } .room-head .logo-subtitle { font-size:13px; margin-top:2px; }
+.room-main { flex:1; padding:18px; border:1px solid var(--line); border-radius:16px; background: radial-gradient(circle at 55% 4%, var(--glow), transparent 30%), linear-gradient(160deg, var(--panel2), var(--bg2)); }
+.share-box { display:flex; gap:8px; flex-wrap:wrap; margin:10px 0; }
+.share-box input { flex:1; min-width:220px; font-size:14px; }
+.online-list { margin-top:14px; display:flex; flex-direction:column; gap:8px; }
+.online-item { display:flex; gap:10px; align-items:center; flex-wrap:wrap; padding:10px 12px; border:1px solid var(--line-soft); border-radius:12px; background:var(--input); font-size:14px; }
+.online-item .ttl { flex:1; min-width:160px; }
+@media (max-width:860px){ .room-main { padding:12px 8px 20px; } .room-head { padding:8px 10px; } }
 @media print { body { background:#fff; color:#000; } }
 </style>
 </head>
@@ -322,7 +349,8 @@ const I18N = {
     yourCode:"Ваш код учителя", codeHint:"Передайте этот код ученикам — при регистрации они вводят его и попадают в ваш список.", enterCode:"Код вашего учителя", attach:"Привязать",
     teacherLinked:"Вы привязаны к учителю", codeNotFound:"Учитель с таким кодом не найден.", users:"Пользователи", name:"Имя", role:"Тариф", access:"Доступ", actions:"Действия",
     term:"Срок", m1:"1 месяц", m3:"3 месяца", m6:"6 месяцев", y1:"1 год", openAcc:"Открыть доступ", closeAcc2:"Закрыть доступ", pending:"Доступ не предоставлен", openForever:"Открыт бессрочно", openUntil:"Открыт до", mail:"Почта", mailOk:"подтверждена", mailNo:"не подтверждена", confirmMail:"Подтвердить вручную", uzLang:"Узбекский язык", uzOn:"открыт", uzOff:"закрыт", del:"Удалить", delAsk:"Удалить пользователя из списка Лилы? Доступ будет закрыт.", confirmAsk:"Подтвердить почту вручную?", give:"Открыть", forever:"Бессрочно", closeAcc:"Закрыть", noStudents:"Пока нет учеников.",
-    disclaimer:"Игра — инструмент самопознания. Она не заменяет помощь психолога или врача.", tapHint:"Нажмите на любую клетку, чтобы прочитать её описание.", rollShort:"Бросить"
+    disclaimer:"Игра — инструмент самопознания. Она не заменяет помощь психолога или врача.", tapHint:"Нажмите на любую клетку, чтобы прочитать её описание.", rollShort:"Бросить",
+    onlineTitle:"Играть онлайн по ссылке", onlineHint:"Создайте ссылку и отправьте её клиенту или друзьям: они откроют её на своём телефоне, впишут имя и сразу присоединятся — без регистрации и пароля. Запрос можно записать сразу или позже, по ходу разговора. Вы можете быть ведущим и не играть или отметить «Я тоже играю».", optional:"по желанию", iPlay:"Я тоже играю (необязательно)", hostName:"Ваше имя (ведущий)", leader:"ведущий", noPlayers:"Пока никто не присоединился.", nameTaken:"Игрок с именем «{name}» уже есть в этой игре. Добавьте, пожалуйста, фамилию или первую букву фамилии, чтобы вас различали, например: «{name} С.».", yourName:"Ваше имя", createLink:"Создать ссылку-приглашение", myOnline:"Мои онлайн-игры", open:"Открыть", inviteTitle:"Приглашение в игру Лила", inviteFrom:"Вас приглашает", join:"Присоединиться к игре", lobbyTitle:"Ожидание игроков", shareTitle:"Ссылка-приглашение", shareHint:"Отправьте эту ссылку тем, с кем хотите играть. Когда все присоединятся, создатель игры нажимает «Начать игру».", copy:"Скопировать", copied:"Ссылка скопирована", sendWa:"Отправить в WhatsApp", waText:"Приглашаю тебя сыграть в Лилу — игру самопознания. Открой ссылку, впиши имя и запрос:", startOnline:"Начать игру", waitHost:"Игру начнёт её создатель, когда все соберутся.", you:"вы", host:"создатель", waitTurn:"Ждём хода", started:"Эта игра уже началась — присоединиться к ней нельзя. Попросите создателя игры прислать новую ссылку.", full:"В этой игре уже максимальное число игроков.", badLink:"Ссылка недействительна или срок игры истёк.", leaveRoom:"← Выйти из игры", syncAgain:"Игра обновилась, попробуйте ещё раз.", netErr:"Нет связи с сервером. Проверьте интернет.", stLobby:"ожидание игроков", stPlay:"идёт игра", stDone:"завершена", tooMany:"Слишком много игр за сутки. Попробуйте завтра.", noAccessOnline:"Создавать игры по ссылке могут только участники с открытым доступом.", delOnline:"Удалить онлайн-игру? Ссылка перестанет работать."
   },
   kz: {
     loginTitle:"Платформаға кіру", email:"Email", password:"Құпиясөз", password2:"Құпиясөзді қайталаңыз", enter:"Кіру", forgot:"Құпиясөзді ұмыттыңыз ба?", or:"немесе",
@@ -348,7 +376,8 @@ const I18N = {
     yourCode:"Сіздің ұстаз кодыңыз", codeHint:"Бұл кодты шәкірттеріңізге беріңіз — тіркелгенде оны енгізіп, сіздің тізіміңізге түседі.", enterCode:"Ұстазыңыздың коды", attach:"Байланыстыру",
     teacherLinked:"Сіз ұстазға байланыстырылдыңыз", codeNotFound:"Мұндай кодпен ұстаз табылмады.", users:"Пайдаланушылар", name:"Аты-жөні", role:"Тариф", access:"Қолжетімділік", actions:"Әрекет",
     term:"Мерзім", m1:"1 ай", m3:"3 ай", m6:"6 ай", y1:"1 жыл", openAcc:"Қолжетімділікті ашу", closeAcc2:"Қолжетімділікті жабу", pending:"Қолжетімділік берілмеген", openForever:"Мерзімсіз ашық", openUntil:"Ашық, дейін:", mail:"Пошта", mailOk:"расталған", mailNo:"расталмаған", confirmMail:"Қолмен растау", uzLang:"Өзбек тілі", uzOn:"ашық", uzOff:"жабық", del:"Жою", delAsk:"Пайдаланушыны Лила тізімінен жою керек пе? Қолжетімділік жабылады.", confirmAsk:"Поштаны қолмен растау керек пе?", give:"Ашу", forever:"Мерзімсіз", closeAcc:"Жабу", noStudents:"Әзірге шәкірт жоқ.",
-    disclaimer:"Ойын — өзін-өзі тану құралы. Ол психолог немесе дәрігер көмегін алмастырмайды.", tapHint:"Сипаттамасын оқу үшін кез келген торды басыңыз.", rollShort:"Лақтыру"
+    disclaimer:"Ойын — өзін-өзі тану құралы. Ол психолог немесе дәрігер көмегін алмастырмайды.", tapHint:"Сипаттамасын оқу үшін кез келген торды басыңыз.", rollShort:"Лақтыру",
+    onlineTitle:"Сілтеме арқылы онлайн ойнау", onlineHint:"Сілтеме жасап, оны клиентке немесе достарыңызға жіберіңіз: олар оны өз телефонында ашып, есімін жазады да, бірден қосылады — тіркеусіз және құпиясөзсіз. Сұранысты бірден немесе кейін, әңгіме барысында жазуға болады. Сіз ойнамай, жүргізуші бола аласыз немесе «Мен де ойнаймын» деп белгілеңіз.", optional:"қаласаңыз", iPlay:"Мен де ойнаймын (міндетті емес)", hostName:"Сіздің есіміңіз (жүргізуші)", leader:"жүргізуші", noPlayers:"Әзірге ешкім қосылған жоқ.", nameTaken:"Бұл ойында «{name}» есімді ойыншы бар. Сізді ажырату үшін тегіңізді немесе тегіңіздің бірінші әрпін қосыңыз, мысалы: «{name} С.».", yourName:"Сіздің есіміңіз", createLink:"Шақыру сілтемесін жасау", myOnline:"Менің онлайн ойындарым", open:"Ашу", inviteTitle:"Лила ойынына шақыру", inviteFrom:"Сізді шақырып отыр", join:"Ойынға қосылу", lobbyTitle:"Ойыншыларды күту", shareTitle:"Шақыру сілтемесі", shareHint:"Бұл сілтемені бірге ойнағыңыз келетіндерге жіберіңіз. Барлығы қосылғанда, ойынды ашқан адам «Ойынды бастау» батырмасын басады.", copy:"Көшіру", copied:"Сілтеме көшірілді", sendWa:"WhatsApp-қа жіберу", waText:"Сені Лила — өзін-өзі тану ойынын ойнауға шақырамын. Сілтемені ашып, есіміңді және сұранысыңды жаз:", startOnline:"Ойынды бастау", waitHost:"Барлығы жиналғанда, ойынды оны ашқан адам бастайды.", you:"сіз", host:"ойынды ашқан", waitTurn:"Жүрісін күтеміз", started:"Бұл ойын басталып кеткен — оған қосылу мүмкін емес. Ойынды ашқан адамнан жаңа сілтеме сұраңыз.", full:"Бұл ойында ойыншылар саны шегіне жетті.", badLink:"Сілтеме жарамсыз немесе ойынның мерзімі өтіп кеткен.", leaveRoom:"← Ойыннан шығу", syncAgain:"Ойын жаңарды, қайта көріңіз.", netErr:"Сервермен байланыс жоқ. Интернетті тексеріңіз.", stLobby:"ойыншыларды күту", stPlay:"ойын жүріп жатыр", stDone:"аяқталды", tooMany:"Бір тәулікте ойын тым көп. Ертең қайталап көріңіз.", noAccessOnline:"Сілтеме арқылы ойынды тек қолжетімділігі ашық қатысушылар жасай алады.", delOnline:"Онлайн ойынды жою керек пе? Сілтеме жұмыс істемей қалады."
   },
   uz: {
     loginTitle:"Платформага кириш", email:"Email", password:"Парол", password2:"Паролни такрорланг", enter:"Кириш", forgot:"Паролни унутдингизми?", or:"ёки",
@@ -374,7 +403,8 @@ const I18N = {
     yourCode:"Устоз кодингиз", codeHint:"Бу кодни шогирдларингизга беринг — улар рўйхатдан ўтишда уни киритиб, сизнинг рўйхатингизга тушади.", enterCode:"Устозингиз коди", attach:"Боғлаш",
     teacherLinked:"Сиз устозга боғландингиз", codeNotFound:"Бундай кодли устоз топилмади.", users:"Фойдаланувчилар", name:"Исм-фамилия", role:"Тариф", access:"Рухсат", actions:"Амаллар",
     term:"Муддат", m1:"1 ой", m3:"3 ой", m6:"6 ой", y1:"1 йил", openAcc:"Рухсатни очиш", closeAcc2:"Рухсатни ёпиш", pending:"Рухсат берилмаган", openForever:"Муддатсиз очиқ", openUntil:"Очиқ, гача:", mail:"Почта", mailOk:"тасдиқланган", mailNo:"тасдиқланмаган", confirmMail:"Қўлда тасдиқлаш", uzLang:"Ўзбек тили", uzOn:"очиқ", uzOff:"ёпиқ", del:"Ўчириш", delAsk:"Фойдаланувчини Лила рўйхатидан ўчирасизми? Рухсат ёпилади.", confirmAsk:"Почтани қўлда тасдиқлайсизми?", give:"Очиш", forever:"Муддатсиз", closeAcc:"Ёпиш", noStudents:"Ҳозирча шогирдлар йўқ.",
-    disclaimer:"Ўйин — ўзликни англаш воситаси. У психолог ёки шифокор ёрдамининг ўрнини босмайди.", tapHint:"Тавсифини ўқиш учун исталган катакни босинг.", rollShort:"Ташлаш"
+    disclaimer:"Ўйин — ўзликни англаш воситаси. У психолог ёки шифокор ёрдамининг ўрнини босмайди.", tapHint:"Тавсифини ўқиш учун исталган катакни босинг.", rollShort:"Ташлаш",
+    onlineTitle:"Ҳавола орқали онлайн ўйнаш", onlineHint:"Ҳавола яратинг ва уни мижозга ёки дўстларингизга юборинг: улар уни ўз телефонида очиб, исмини ёзади ва дарҳол қўшилади — рўйхатдан ўтмасдан ва паролсиз. Сўровни дарҳол ёки кейинроқ, суҳбат давомида ёзиш мумкин. Сиз ўйнамасдан бошловчи бўлишингиз ёки «Мен ҳам ўйнайман» деб белгилашингиз мумкин.", optional:"хоҳишга кўра", iPlay:"Мен ҳам ўйнайман (мажбурий эмас)", hostName:"Исмингиз (бошловчи)", leader:"бошловчи", noPlayers:"Ҳозирча ҳеч ким қўшилмади.", nameTaken:"Бу ўйинда «{name}» исмли ўйинчи аллақачон бор. Сизни ажратиш учун фамилиянгизни ёки фамилиянгизнинг биринчи ҳарфини қўшинг, масалан: «{name} С.».", yourName:"Исмингиз", createLink:"Таклиф ҳаволасини яратиш", myOnline:"Менинг онлайн ўйинларим", open:"Очиш", inviteTitle:"Лила ўйинига таклиф", inviteFrom:"Сизни таклиф қилмоқда", join:"Ўйинга қўшилиш", lobbyTitle:"Ўйинчиларни кутиш", shareTitle:"Таклиф ҳаволаси", shareHint:"Бу ҳаволани бирга ўйнамоқчи бўлганларга юборинг. Ҳамма қўшилгач, ўйинни яратган киши «Ўйинни бошлаш» тугмасини босади.", copy:"Нусха олиш", copied:"Ҳавола нусхаланди", sendWa:"WhatsApp орқали юбориш", waText:"Сени Лила — ўзликни англаш ўйинини ўйнашга таклиф қиламан. Ҳаволани очиб, исминг ва сўровингни ёз:", startOnline:"Ўйинни бошлаш", waitHost:"Ҳамма йиғилгач, ўйинни уни яратган киши бошлайди.", you:"сиз", host:"яратувчи", waitTurn:"Юришини кутамиз", started:"Бу ўйин бошланиб кетган — унга қўшилиб бўлмайди. Ўйинни яратган кишидан янги ҳавола сўранг.", full:"Бу ўйинда ўйинчилар сони энг кўп миқдорга етган.", badLink:"Ҳавола яроқсиз ёки ўйин муддати тугаган.", leaveRoom:"← Ўйиндан чиқиш", syncAgain:"Ўйин янгиланди, қайта уриниб кўринг.", netErr:"Сервер билан алоқа йўқ. Интернетни текширинг.", stLobby:"ўйинчилар кутилмоқда", stPlay:"ўйин давом этмоқда", stDone:"якунланган", tooMany:"Бир кунда ўйинлар жуда кўп. Эртага уриниб кўринг.", noAccessOnline:"Ҳавола орқали ўйинни фақат рухсати очиқ иштирокчилар яратиши мумкин.", delOnline:"Онлайн ўйинни ўчирасизми? Ҳавола ишламай қолади."
   }
 };
 
@@ -393,14 +423,20 @@ const C = n => CELL[n] ? CELL[n][S.lang] : { name:"", alt:"", sub:"", text:"", q
 function toast(m){ const el = $("toast"); el.textContent = m; el.classList.remove("hidden"); clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.add("hidden"), 2200); }
 let rerender = () => {};
 function setLang(l){
+  if (S.room) return;
   if (l === "uz" && !canUz()) l = "ru";
   S.lang = l; try { localStorage.setItem("lila_lang", l); } catch(e){}
   document.documentElement.dataset.lang = l; document.documentElement.lang = ({ kz:"kk", uz:"uz-Cyrl" })[l] || "ru";
   document.title = CONFIG.name[l]; rerender(); if (openCard.last) openCard.last();
 }
 // Узбекский язык виден только тем, кому администратор открыл его в «Доступе»
-function canUz(){ return !!(S.user && (S.isAdmin || (S.member && S.member.uz_access))); }
-function langSwitch(){ return `<div class="lang-switch"><button class="${S.lang==='kz'?'on':''}" onclick="setLang('kz')">Қазақша</button><button class="${S.lang==='ru'?'on':''}" onclick="setLang('ru')">Русский</button>${canUz() ? `<button class="${S.lang==='uz'?'on':''}" onclick="setLang('uz')">Ўзбекча</button>` : ""}</div>`; }
+function canUz(){ if (S.room) return S.room.lang === "uz"; return !!(S.user && (S.isAdmin || (S.member && S.member.uz_access))); }
+function langSwitch(){
+  const opts = ["kz","ru"].concat(canUz() ? ["uz"] : []), short = { ru:"РУС", kz:"ҚАЗ", uz:"ЎЗБ" }, full = { kz:"Қазақша", ru:"Русский", uz:"Ўзбекча" };
+  return `<div class="lang" id="langBox"><button class="lang-btn" onclick="event.stopPropagation();$('langMenu').classList.toggle('hidden')">🌐 ${short[S.lang]} ▾</button>
+    <div class="lang-menu hidden" id="langMenu">${opts.map(l => `<button class="${S.lang===l?'on':''}" onclick="setLang('${l}')">${full[l]}</button>`).join("")}</div></div>`;
+}
+document.addEventListener("click", () => { const m = $("langMenu"); if (m) m.classList.add("hidden"); });
 function logoHtml(){ return `<div class="logo"><div class="logo-symbol">${CONFIG.logoSymbol}</div><div><div class="logo-title">${esc(CONFIG.logoTitle[S.lang])}</div><div class="logo-subtitle">${esc(CONFIG.logoSubtitle[S.lang])}</div></div></div>`; }
 function footerHtml(){ const site = CONFIG.site ? ` · <a href="https://${esc(CONFIG.site)}" target="_blank" rel="noopener">${esc(CONFIG.site)}</a>` : "";
   return `<footer class="foot"><b>${esc(CONFIG.name[S.lang])}</b>${site}<br>© ${new Date().getFullYear()} · ${t("footer")}</footer>`; }
@@ -431,7 +467,7 @@ function renderAuth(){
     <button class="linkbtn" onclick="authView='login';renderAuth()">${t("haveAccount")}</button>`;
   $("app").innerHTML = `<div class="auth"><div class="auth-card ${wide ? "wide" : ""}">
     <div class="logo" style="display:block;margin-bottom:16px"><div class="logo-symbol">${CONFIG.logoSymbol}</div><div class="logo-title">${esc(CONFIG.logoTitle[S.lang])}</div><div class="logo-subtitle">${esc(CONFIG.logoSubtitle[S.lang])}</div></div>
-    ${langSwitch()}${inner}</div></div>${footerHtml()}`;
+    ${inner}</div></div><div class="auth-lang">${langSwitch()}</div>${footerHtml()}`;
 }
 function aMsg(text, ok){ const m = $("aMsg"); if (m){ m.textContent = text; m.className = "msg " + (ok ? "ok" : "err"); } }
 async function doLogin(){
@@ -471,6 +507,7 @@ async function doLogout(){ await sb.auth.signOut(); S.user = null; S.games = { r
 
 /* ========= Загрузка ========= */
 async function boot(){
+  const rp = parseRoomHash(); if (rp) return enterRoom(rp);
   const { data:{ session } } = await sb.auth.getSession();
   if (!session) return renderAuth();
   S.user = session.user;
@@ -500,12 +537,13 @@ function renderApp(){
     <aside class="sidebar" id="sidebar"><div class="side-head">${logoHtml()}<button class="burger" onclick="$('sidebar').classList.toggle('open')">☰</button></div>
       <div class="nav">${tabsList().map(x => x ? `<button class="nav-item ${S.tab===x[0]?'active':''}" onclick="go('${x[0]}')"><span class="nav-icon">${TAB_ICONS[x[0]]}</span> ${t(x[1])}</button>` : `<div class="nav-sep"></div>`).join("")}
       <button class="nav-item logout" onclick="doLogout()"><span class="nav-icon">🚪</span> ${t("logout")}</button></div></aside>
-    <section class="main"><div class="topbar"><h1>${esc(tabTitle())}</h1>${langSwitch()}</div><div id="main"></div>${footerHtml()}</section></div>`;
+    <section class="main"><div class="topbar"><h1>${esc(tabTitle())}</h1><div class="account"><span class="mail">${esc(S.user.email || "")}</span>${langSwitch()}</div></div><div id="main"></div>${footerHtml()}</section></div>`;
   renderMain();
 }
 function noAccessHtml(){ return `<div class="card empty"><div style="font-size:46px">🔒</div><h2>${t("noAccessTitle")}</h2><p>${t("noAccessText")}</p></div>`; }
 function renderMain(){
   const m = $("main"); if (!m) return;
+  if (S.room) return renderRoomMain(m);
   if (S.tab === "rules") return renderRules(m);
   if (S.tab === "access") return renderAccess(m);
   if (!S.hasAccess) return m.innerHTML = noAccessHtml();
@@ -525,7 +563,15 @@ function renderSetup(m){
       <input placeholder="${t("playerName")} ${i+1}" value="${esc(p.name)}" oninput="S.setupPlayers[${i}].name=this.value">
       <textarea placeholder="${t("playerReq")}" oninput="S.setupPlayers[${i}].req=this.value" style="min-height:46px">${esc(p.req)}</textarea></div>`).join("")}
     <div style="margin-top:18px"><button class="btn" onclick="startGame()">${t("start")}</button></div>
-    <p class="muted" style="font-size:13px;margin-top:16px">${t("disclaimer")}</p></div>`;
+    <p class="muted" style="font-size:13px;margin-top:16px">${t("disclaimer")}</p></div>
+    <div class="card setup" style="margin-top:16px"><h2>🔗 ${t("onlineTitle")}</h2>
+    <p class="muted" style="font-size:14px;margin:0 0 6px">${t("onlineHint")}</p>
+    <label class="f">${t("hostName")}</label><input id="onName" maxlength="60" style="max-width:420px">
+    <label class="row" style="margin-top:12px;cursor:pointer;gap:8px"><input id="onPlay" type="checkbox" style="width:auto" onchange="$('onReqBox').style.display=this.checked?'':'none'"> ${t("iPlay")}</label>
+    <div id="onReqBox" style="display:none"><label class="f">${t("playerReq")} (${t("optional")})</label><textarea id="onReq" style="min-height:56px"></textarea></div>
+    <div style="margin-top:14px"><button class="btn" onclick="createRoom()">${t("createLink")}</button></div>
+    <div id="myRooms"></div></div>`;
+  loadMyRooms();
 }
 async function startGame(){
   const ps = S.setupPlayers.slice(0, S.setupCount);
@@ -573,18 +619,18 @@ function renderGame(m){
   const g = S.game, cur = g.players[g.turn], allDone = g.players.every(p => p.done);
   const mbar = allDone ? "" : `<div class="mbar"><div class="dice" id="diceM">${g.dice ?? "🎲"}</div>
     <div class="who"><span class="tok" style="display:inline-block;background:${cur.color};vertical-align:middle"></span> <b>${esc(cur.name)}</b><br><span class="muted">${esc(posLabel(cur))}</span></div>
-    <button class="btn" onclick="rollDice()">${t("rollShort")}</button></div>`;
+    <button class="btn" onclick="rollDice()" ${canRoll()?'':'disabled'}>${canRoll() ? t("rollShort") : "⏳"}</button></div>`;
   m.innerHTML = `<div class="game ${mbar ? 'has-mbar' : ''}"><div>${boardHtml()}${mbar}</div>
     <div class="side-panel">
       <div class="card turn-box">${allDone ? `<div class="who">🪷 ${t("allDone")}</div>` : `<div class="muted">${t("turnOf")}</div><div class="who"><span class="tok" style="display:inline-block;background:${cur.color};vertical-align:middle"></span> ${esc(cur.name)}</div>`}
         <div class="dice" id="dice">${g.dice ?? "🎲"}</div>
-        <button class="btn" style="width:100%" id="rollBtn" onclick="rollDice()" ${allDone?'disabled':''}>${t("roll")}</button>
+        <button class="btn" style="width:100%" id="rollBtn" onclick="rollDice()" ${allDone || !canRoll()?'disabled':''}>${allDone || canRoll() ? t("roll") : t("waitTurn") + ": " + esc(cur.name)}</button>
         <div class="msg-box" style="margin-top:12px">${esc(g.msg)}</div></div>
-      <div class="card"><div class="plist">${g.players.map((p,i) => `<div class="pitem ${i===g.turn && !allDone?'cur':''}"><span class="dot" style="background:${p.color}"></span>
-        <span><b>${esc(p.name)}</b>${p.req ? `<br><span class="muted" style="font-size:12px">${esc(p.req)}</span>` : ""}</span><span class="pos">${esc(posLabel(p))}</span></div>`).join("")}</div>
+      <div class="card">${S.room && g.hostName && !g.players.some(p => p.key === g.host) ? `<p class="muted" style="margin:0 0 10px">🪷 ${cap(t("leader"))}: <b>${esc(g.hostName)}</b>${roomIsHost() ? ` (${t("you")})` : ""}</p>` : ""}<div class="plist">${g.players.map((p,i) => `<div class="pitem ${i===g.turn && !allDone?'cur':''}"><span class="dot" style="background:${p.color}"></span>
+        <span><b>${esc(p.name)}</b>${S.room && p.key === S.room.key ? ` <span class="muted">(${t("you")})</span>` : ""}${p.req ? `<br><span class="muted" style="font-size:12px">${esc(p.req)}</span>` : ""}</span><span class="pos">${esc(posLabel(p))}</span></div>`).join("")}</div>
         <div class="row" style="margin-top:12px"><button class="btn small ghost" onclick="openPath()">${t("path")}</button>
         <button class="btn small ghost" onclick="printResults()">${t("printRes")}</button>
-        <button class="btn small ghost" onclick="endGame()">${t("endGame")}</button></div></div>
+        ${!S.room || (roomIsHost() && S.room.state.status !== "done") ? `<button class="btn small ghost" onclick="endGame()">${t("endGame")}</button>` : ""}</div></div>
       ${g.log.length ? `<div class="card log">${g.log.slice(-30).reverse().map(l => `<div>${esc(l)}</div>`).join("")}</div>` : ""}
     </div></div>`;
 }
@@ -592,7 +638,7 @@ function renderGame(m){
 /* ========= Правила хода ========= */
 let rolling = false;
 async function rollDice(){
-  const g = S.game; if (!g || rolling) return; const slotLang = S.lang;
+  const g = S.game; if (!g || rolling || !canRoll()) return; const slotLang = S.lang;
   const p = g.players[g.turn]; if (p.done) return nextTurn();
   rolling = true;
   const r = 1 + Math.floor(Math.random() * 6);
@@ -667,6 +713,7 @@ function showSequence(cells, player){
   show();
 }
 async function saveNoteAnd(isLast){
+  if (S.room) return roomSaveNote(isLast);
   const box = $("noteBox"); if (box && window._seqEntry) window._seqEntry.notes = box.value;
   await saveGame();
   if (isLast) closeCard(); else window._seqNext();
@@ -692,11 +739,13 @@ function printResults(){
 }
 async function endGame(){
   if (!confirm(t("confirmEnd"))) return;
+  if (S.room) return roomEnd();
   await saveGame(true); S.game = null; S.gameId = null; renderMain();
 }
 
 /* ========= Сохранение ========= */
 async function saveGame(finish, slotLang){
+  if (S.room) return roomPush();
   const slot = S.games[slotLang || S.lang], g = slot.game; if (!g) return;
   const done = finish || g.players.every(p => p.done);
   const row = { owner_id:S.user.id, lang:g.lang || S.lang, title:g.players.map(p => p.name).join(", "), state:g, is_finished:done, updated_at:new Date().toISOString() };
@@ -825,6 +874,184 @@ async function removeUser(id){
   const { data } = await sb.rpc("lila_remove_member", { p_user:id }); toast(data === "ok" ? t("saved") : t("error")); renderMain();
 }
 async function setRole(id, role){ const { data } = await sb.rpc("lila_set_role", { p_user:id, p_role:role }); toast(data === "ok" ? t("saved") : t("error")); }
+
+
+/* ========= Игра по ссылке (онлайн, без регистрации для гостей) ========= */
+const ROOM_POLL_MS = 3000;
+function parseRoomHash(){ const m = /^#play=([a-z0-9]{8})\.([a-z0-9]{20})$/.exec(location.hash || ""); return m ? { code:m[1], token:m[2] } : null; }
+function roomLink(code, token){ return location.origin + location.pathname + "#play=" + code + "." + token; }
+function newKey(){ try { if (window.crypto && crypto.randomUUID) return crypto.randomUUID(); } catch(e){} return Math.random().toString(36).slice(2) + Date.now().toString(36) + Math.random().toString(36).slice(2); }
+function roomKey(code){
+  const k = "lila_key_" + code;
+  try { let v = localStorage.getItem(k); if (!v) { v = newKey(); localStorage.setItem(k, v); } return v; }
+  catch(e){ window._roomKeys = window._roomKeys || {}; return window._roomKeys[code] = window._roomKeys[code] || newKey(); }
+}
+function cap(x){ return x ? x[0].toUpperCase() + x.slice(1) : x; }
+function roomIsHost(){ return !!(S.room && S.room.state && S.room.state.host === S.room.key); }
+function roomMember(){ return !!(S.room && S.room.state && (S.room.state.host === S.room.key || S.room.state.players.some(p => p.key === S.room.key))); }
+function canRoll(){
+  if (!S.room) return true;
+  const g = S.room.state; if (!g || g.status !== "play") return false;
+  const cur = g.players[g.turn]; return !!(cur && cur.key === S.room.key);
+}
+function applyRoom(d){
+  const R = S.room; R.version = d.version; R.lang = d.lang || R.lang || "ru"; R.state = d.state;
+  S.lang = R.lang; document.documentElement.dataset.lang = S.lang; document.documentElement.lang = ({ kz:"kk", uz:"uz-Cyrl" })[S.lang] || "ru";
+  document.title = CONFIG.name[S.lang];
+  S.games[S.lang] = { game:d.state, id:null };
+}
+async function enterRoom(p){
+  S.room = { code:p.code, token:p.token, key:roomKey(p.code), version:0, state:null, lang:"ru" };
+  rerender = renderRoom;
+  renderRoom();
+  const { data, error } = await sb.rpc("lila_room_get", { p_code:p.code, p_token:p.token });
+  if (error || !data || data.error) { S.room.error = error ? "netErr" : "badLink"; return renderRoom(); }
+  applyRoom(data); renderRoom(); startRoomPoll();
+}
+function renderRoom(){
+  rerender = renderRoom;
+  $("app").innerHTML = `<div class="room-shell"><div class="room-head">${logoHtml()}
+      <button class="btn small ghost" onclick="leaveRoom()">${t("leaveRoom")}</button></div>
+    <div class="room-main"><div class="topbar" style="margin-bottom:14px"><h1 id="roomTitle">${esc(CONFIG.name[S.lang])}</h1></div><div id="main"></div></div>
+    ${footerHtml()}</div>`;
+  renderMain();
+}
+function leaveRoom(){ stopRoomPoll(); location.hash = ""; location.reload(); }
+function renderRoomMain(m){
+  const R = S.room, g = R.state;
+  if (R.error) return m.innerHTML = `<div class="card empty"><div style="font-size:42px">🔗</div><p>${t(R.error)}</p></div>`;
+  if (!g) return m.innerHTML = `<div class="empty">${t("loading")}</div>`;
+  const host = { name: g.hostName || ((g.players.find(p => p.key === g.host) || g.players[0] || {}).name) || "" };
+  if (!roomMember()) {
+    if (g.status !== "lobby") return m.innerHTML = `<div class="card empty"><div style="font-size:42px">🎲</div><p>${t("started")}</p></div>`;
+    if (g.players.length >= MAX_PLAYERS) return m.innerHTML = `<div class="card empty"><p>${t("full")}</p></div>`;
+    return m.innerHTML = `<div class="card setup"><h2>🪷 ${t("inviteTitle")}</h2>
+      <p>${t("inviteFrom")}: <b>${esc(host ? host.name : "")}</b></p>
+      <label class="f">${t("yourName")}</label><input id="jName" maxlength="60">
+      <label class="f">${t("playerReq")} (${t("optional")})</label><textarea id="jReq" style="min-height:70px"></textarea>
+      <p class="muted" style="font-size:14px">${t("reqHint")}</p>
+      <button class="btn" onclick="joinRoom()">${t("join")}</button><div class="msg" id="jMsg"></div>
+      <p class="muted" style="font-size:13px;margin-top:16px">${t("disclaimer")}</p></div>`;
+  }
+  if (g.status === "lobby") {
+    const link = roomLink(R.code, R.token);
+    const wa = "https://wa.me/?text=" + encodeURIComponent(t("waText") + " " + link);
+    const hostPlays = g.players.some(p => p.key === g.host);
+    return m.innerHTML = `<div class="card setup"><h2>⏳ ${t("lobbyTitle")}</h2>
+      ${!hostPlays && g.hostName ? `<p>🪷 ${cap(t("leader"))}: <b>${esc(g.hostName)}</b>${roomIsHost() ? ` <span class="muted">(${t("you")})</span>` : ""}</p>` : ""}
+      ${g.players.length ? "" : `<p class="muted">${t("noPlayers")}</p>`}
+      <div class="plist">${g.players.map(p => `<div class="pitem"><span class="dot" style="background:${p.color}"></span>
+        <span><b>${esc(p.name)}</b>${p.key === R.key ? ` <span class="muted">(${t("you")})</span>` : ""}${p.key === g.host ? ` <span class="badge">${t("host")}</span>` : ""}${p.req ? `<br><span class="muted" style="font-size:12px">${esc(p.req)}</span>` : ""}</span></div>`).join("")}</div>
+      <h3 style="margin-top:20px">🔗 ${t("shareTitle")}</h3>
+      <div class="share-box"><input id="shareLink" readonly value="${esc(link)}" onclick="this.select()">
+        <button class="btn small" onclick="copyRoomLink()">${t("copy")}</button>
+        <a class="btn small" style="text-decoration:none" href="${esc(wa)}" target="_blank" rel="noopener">${t("sendWa")}</a></div>
+      <p class="muted" style="font-size:14px">${t("shareHint")}</p>
+      ${roomIsHost() ? `<button class="btn" style="margin-top:8px" onclick="startRoom()">▶ ${t("startOnline")}</button>` : `<p><b>${t("waitHost")}</b></p>`}
+      <p class="muted" style="font-size:13px;margin-top:16px">${t("disclaimer")}</p></div>`;
+  }
+  return renderGame(m);
+}
+async function copyRoomLink(){
+  const inp = $("shareLink"); if (!inp) return;
+  try { await navigator.clipboard.writeText(inp.value); } catch(e){ inp.select(); try { document.execCommand("copy"); } catch(_){} }
+  toast(t("copied"));
+}
+async function joinRoom(){
+  const R = S.room, name = ($("jName").value || "").trim(), req = ($("jReq").value || "").trim();
+  if (!name) { $("jMsg").textContent = t("needName"); $("jMsg").className = "msg err"; return; }
+  const color = COLORS[R.state.players.length % COLORS.length];
+  const { data, error } = await sb.rpc("lila_room_join", { p_code:R.code, p_token:R.token, p_key:R.key, p_name:name, p_req:req, p_color:color });
+  if (error || !data) return toast(t("netErr"));
+  if (data.error === "name_taken") { $("jMsg").textContent = t("nameTaken").split("{name}").join(name); $("jMsg").className = "msg err"; $("jName").focus(); return; }
+  if (data.error) { if (data.error === "started" || data.error === "full") { await roomRefresh(true); } return toast(t(data.error === "full" ? "full" : data.error === "started" ? "started" : "badLink")); }
+  applyRoom(data); renderMain();
+}
+async function startRoom(){
+  if (!S.game.players.length) return toast(t("noPlayers"));
+  await roomMutate(g => { if (g.status === "lobby") { g.status = "play"; g.turn = 0; g.msg = ""; } });
+  renderMain();
+}
+async function roomPush(){
+  const R = S.room, st = S.game; if (!st) return false;
+  const { data, error } = await sb.rpc("lila_room_update", { p_code:R.code, p_token:R.token, p_key:R.key, p_state:st, p_version:R.version });
+  if (error || !data) { toast(t("netErr")); return false; }
+  if (data.ok) { R.version = data.version; R.state = st; return true; }
+  if (data.error === "conflict") { applyRoom({ state:data.state, version:data.version, lang:R.lang }); renderMain(); toast(t("syncAgain")); }
+  return false;
+}
+// Изменить общее состояние; при одновременном изменении берём свежую версию и повторяем
+async function roomMutate(fn){
+  const R = S.room;
+  for (let i = 0; i < 3; i++) {
+    fn(S.game);
+    const { data, error } = await sb.rpc("lila_room_update", { p_code:R.code, p_token:R.token, p_key:R.key, p_state:S.game, p_version:R.version });
+    if (error || !data) { toast(t("netErr")); return false; }
+    if (data.ok) { R.version = data.version; R.state = S.game; return true; }
+    if (data.error !== "conflict") return false;
+    applyRoom({ state:data.state, version:data.version, lang:R.lang });
+  }
+  return false;
+}
+async function roomSaveNote(isLast){
+  const box = $("noteBox"), e = window._seqEntry;
+  if (box && e) {
+    const val = box.value, pi = S.game.players.findIndex(p => p.path.includes(e)), ei = pi >= 0 ? S.game.players[pi].path.indexOf(e) : -1;
+    if (pi >= 0 && ei >= 0) await roomMutate(g => { const x = g.players[pi] && g.players[pi].path[ei]; if (x) x.notes = val; });
+  }
+  if (isLast) { closeCard(); renderMain(); } else window._seqNext();
+}
+async function roomEnd(){
+  await roomMutate(g => { g.status = "done"; });
+  try {
+    const { data:{ session } } = await sb.auth.getSession();
+    if (session && roomIsHost()) {
+      const g = S.game;
+      await sb.from("lila_games").insert({ owner_id:session.user.id, lang:S.lang, title:g.players.map(p => p.name).join(", "), state:g, is_finished:true, updated_at:new Date().toISOString() });
+    }
+  } catch(e){ console.warn(e); }
+  renderMain();
+}
+async function roomRefresh(force){
+  const R = S.room; if (!R) return;
+  const { data } = await sb.rpc("lila_room_get", { p_code:R.code, p_token:R.token });
+  if (!data || data.error) return;
+  if (force || data.version > R.version) {
+    if (!force && (rolling || $("noteBox"))) return; // не мешаем, пока игрок бросает кубик или пишет мысли
+    applyRoom(data); renderMain();
+  }
+}
+function startRoomPoll(){ stopRoomPoll(); S.room.timer = setInterval(() => { if (!document.hidden) roomRefresh(false); }, ROOM_POLL_MS); }
+function stopRoomPoll(){ if (S.room && S.room.timer) clearInterval(S.room.timer); }
+async function createRoom(){
+  const name = ($("onName").value || "").trim(), play = !!($("onPlay") && $("onPlay").checked), req = play ? ($("onReq").value || "").trim() : "";
+  if (!name) return toast(t("needName"));
+  const key = newKey();
+  const { data, error } = await sb.rpc("lila_room_create", { p_lang:S.lang, p_name:name, p_req:req, p_key:key, p_color:COLORS[0], p_play:play });
+  if (error || !data) return toast(t("netErr"));
+  if (data.error) return toast(t(data.error === "too_many" ? "tooMany" : data.error === "no_access" ? "noAccessOnline" : "error"));
+  try { localStorage.setItem("lila_key_" + data.code, key); } catch(e){ window._roomKeys = window._roomKeys || {}; window._roomKeys[data.code] = key; }
+  location.hash = "#play=" + data.code + "." + data.token;
+}
+async function loadMyRooms(){
+  const box = $("myRooms"); if (!box || !S.user) return;
+  const { data } = await sb.rpc("lila_room_mine");
+  if (!data || !data.length || !$("myRooms")) return;
+  const st = { lobby:"stLobby", play:"stPlay", done:"stDone" };
+  $("myRooms").innerHTML = `<h3 style="margin-top:22px">${t("myOnline")}</h3><div class="online-list">${data.map(r => `<div class="online-item">
+      <span class="ttl"><b>${esc(r.title || "")}</b><br><span class="muted" style="font-size:12px">${t(st[r.status] || "stPlay")} · ${({ru:"Рус",kz:"Қаз",uz:"Ўзб"})[r.lang] || ""} · ${new Date(r.updated_at).toLocaleString("ru-RU")}</span></span>
+      <button class="btn small" onclick="location.hash='#play=${r.code}.${r.token}'">${t("open")}</button>
+      <button class="btn small ghost" onclick="deleteRoom('${r.code}')">${t("del")}</button></div>`).join("")}</div>`;
+}
+async function deleteRoom(code){
+  if (!confirm(t("delOnline"))) return;
+  await sb.rpc("lila_room_delete", { p_code:code }); loadMyRooms(); const b = $("myRooms"); if (b) b.innerHTML = ""; loadMyRooms();
+}
+window.addEventListener("hashchange", () => {
+  const rp = parseRoomHash();
+  if (rp && (!S.room || S.room.code !== rp.code)) { stopRoomPoll(); enterRoom(rp); }
+  else if (!rp && S.room) { stopRoomPoll(); location.reload(); }
+});
 
 /* ========= Старт ========= */
 document.documentElement.dataset.lang = S.lang; document.documentElement.lang = ({ kz:"kk", uz:"uz-Cyrl" })[S.lang] || "ru"; document.title = CONFIG.name[S.lang];
