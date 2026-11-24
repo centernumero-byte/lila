@@ -28,14 +28,14 @@ html[data-lang="kz"] {
   --active1:rgba(90,150,115,.55); --active2:rgba(65,115,88,.35); --btn1:#4f8a68; --btn2:#3b6d51; --input:rgba(0,0,0,.22);
   --cell:#33463c; --cell2:#2c3d34; --center:#41604f;
 }
-html[data-lang="uz"] {
+html[data-lang="uz"], html[data-lang="uzl"] {
   --bg1:#16212a; --bg2:#22323d; --panel1:#2b414d; --panel2:#1c2a33; --card1:#31505d; --card2:#233843;
   --glow:rgba(120,200,215,.18); --gold:#cdeef3; --gold2:#9fd3dc; --text:#eef5f6; --muted:#a9c3c9;
   --line:rgba(150,210,220,.50); --line-soft:rgba(150,210,220,.22); --hover:rgba(120,200,215,.13);
   --active1:rgba(70,150,165,.55); --active2:rgba(50,115,128,.35); --btn1:#3f8796; --btn2:#2f6a76; --input:rgba(0,0,0,.22);
   --cell:#2f4652; --cell2:#283d48; --center:#3c5f6d;
 }
-html[data-lang="uz"] .dice { background:#f0f8f9; color:#1d3640; }
+html[data-lang="uz"] .dice, html[data-lang="uzl"] .dice { background:#f0f8f9; color:#1d3640; }
 * { box-sizing:border-box; }
 html, body { margin:0; }
 body { font-family:Arial, Helvetica, sans-serif; color:var(--text); min-height:100vh;
@@ -410,29 +410,59 @@ const I18N = {
 
 /* ========= Состояние ========= */
 const S = {
-  lang: (() => { try { const l = localStorage.getItem("lila_lang"); return ["ru","kz","uz"].includes(l) ? l : "ru"; } catch(e){ return "ru"; } })(),
+  lang: (() => { try { const l = localStorage.getItem("lila_lang"); return ["ru","kz","uz","uzl"].includes(l) ? l : "ru"; } catch(e){ return "ru"; } })(),
   user:null, profile:null, member:null, isAdmin:false, hasAccess:false, tab:"game",
-  games:{ ru:{ game:null, id:null }, kz:{ game:null, id:null }, uz:{ game:null, id:null } }, setupCount:2, setupPlayers:[]
+  games:{ ru:{ game:null, id:null }, kz:{ game:null, id:null }, uz:{ game:null, id:null }, uzl:{ game:null, id:null } }, setupCount:2, setupPlayers:[]
 };
 Object.defineProperty(S, "game", { get(){ return S.games[S.lang].game; }, set(v){ S.games[S.lang].game = v; } });
 Object.defineProperty(S, "gameId", { get(){ return S.games[S.lang].id; }, set(v){ S.games[S.lang].id = v; } });
-const t = k => (I18N[S.lang] && I18N[S.lang][k]) || I18N.ru[k] || k;
+/* Ўзбекча лотин ёзуви — кирилл матнидан автоматик (1995 йилги расмий алифбо) */
+const UZ_VOWELS = "аеёиоуэюяўАЕЁИОУЭЮЯЎ";
+const UZ_MAP = { "а":"a","б":"b","в":"v","г":"g","д":"d","ё":"yo","ж":"j","з":"z","и":"i","й":"y","к":"k","л":"l","м":"m","н":"n","о":"o","п":"p","р":"r","с":"s","т":"t","у":"u",
+  "ф":"f","х":"x","ч":"ch","ш":"sh","щ":"sh","ъ":"ʼ","ы":"i","ь":"","э":"e","ю":"yu","я":"ya","ў":"oʻ","қ":"q","ғ":"gʻ","ҳ":"h" };
+const uzCyr = ch => /[А-Яа-яЁёЎўҚқҒғҲҳ]/.test(ch), uzUp = ch => ch !== ch.toLowerCase() && ch === ch.toUpperCase();
+const uzCache = new Map();
+function translit(text){
+  if (!text || typeof text !== "string" || !/[А-Яа-яЁёЎўҚқҒғҲҳ]/.test(text)) return text;
+  if (uzCache.has(text)) return uzCache.get(text);
+  let out = "";
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i], lo = ch.toLowerCase(), prev = i > 0 ? text[i-1] : "", next = text[i+1] || "";
+    let lat;
+    if (lo === "е") lat = (!prev || !uzCyr(prev) || UZ_VOWELS.includes(prev) || "ъьЪЬ".includes(prev)) ? "ye" : "e";
+    else if (lo === "ц") lat = (prev && UZ_VOWELS.includes(prev)) ? "ts" : "s";
+    else if (UZ_MAP.hasOwnProperty(lo)) lat = UZ_MAP[lo];
+    else { out += ch; continue; }
+    if (uzUp(ch) && lat) {
+      const allCaps = (next && uzUp(next) && uzCyr(next)) || (prev && uzUp(prev) && uzCyr(prev) && !(next && uzCyr(next) && !uzUp(next)));
+      lat = allCaps ? lat.toUpperCase() : lat.charAt(0).toUpperCase() + lat.slice(1);
+    }
+    out += lat;
+  }
+  uzCache.set(text, out); return out;
+}
+const BASE = l => l === "uzl" ? "uz" : l;                    // латиница берёт тексты узбекской кириллицы
+const TR = x => S.lang === "uzl" ? translit(x) : x;
+const isUzLang = l => l === "uz" || l === "uzl";
+["name","logoTitle","logoSubtitle"].forEach(k => { CONFIG[k].uzl = translit(CONFIG[k].uz); });
+const t = k => { const v = I18N[BASE(S.lang)] && I18N[BASE(S.lang)][k]; return v ? TR(v) : (I18N.ru[k] || k); };
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const $ = id => document.getElementById(id);
-const C = n => CELL[n] ? CELL[n][S.lang] : { name:"", alt:"", sub:"", text:"", q:[], p:"" };
+const C = n => { const c = CELL[n] ? CELL[n][BASE(S.lang)] : null; if (!c) return { name:"", alt:"", sub:"", text:"", q:[], p:"" };
+  return S.lang === "uzl" ? { name:TR(c.name), alt:TR(c.alt), sub:TR(c.sub), text:TR(c.text), q:(c.q || []).map(TR), p:TR(c.p) } : c; };
 function toast(m){ const el = $("toast"); el.textContent = m; el.classList.remove("hidden"); clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.add("hidden"), 2200); }
 let rerender = () => {};
 function setLang(l){
   if (S.room) return;
-  if (l === "uz" && !canUz()) l = "ru";
+  if (isUzLang(l) && !canUz()) l = "ru";
   S.lang = l; try { localStorage.setItem("lila_lang", l); } catch(e){}
-  document.documentElement.dataset.lang = l; document.documentElement.lang = ({ kz:"kk", uz:"uz-Cyrl" })[l] || "ru";
+  document.documentElement.dataset.lang = l; document.documentElement.lang = ({ kz:"kk", uz:"uz-Cyrl", uzl:"uz-Latn" })[l] || "ru";
   document.title = CONFIG.name[l]; rerender(); if (openCard.last) openCard.last();
 }
 // Узбекский язык виден только тем, кому администратор открыл его в «Доступе»
-function canUz(){ if (S.room) return S.room.lang === "uz"; return !!(S.user && (S.isAdmin || (S.member && S.member.uz_access))); }
+function canUz(){ if (S.room) return isUzLang(S.room.lang); return !!(S.user && (S.isAdmin || (S.member && S.member.uz_access))); }
 function langSwitch(){
-  const opts = ["kz","ru"].concat(canUz() ? ["uz"] : []), short = { ru:"РУС", kz:"ҚАЗ", uz:"ЎЗБ" }, full = { kz:"Қазақша", ru:"Русский", uz:"Ўзбекча" };
+  const opts = ["kz","ru"].concat(canUz() ? ["uz","uzl"] : []), short = { ru:"РУС", kz:"ҚАЗ", uz:"ЎЗБ", uzl:"OʻZB" }, full = { kz:"Қазақша", ru:"Русский", uz:"Ўзбекча (кирилл)", uzl:"Oʻzbekcha (lotin)" };
   return `<div class="lang" id="langBox"><button class="lang-btn" onclick="event.stopPropagation();$('langMenu').classList.toggle('hidden')">🌐 ${short[S.lang]} ▾</button>
     <div class="lang-menu hidden" id="langMenu">${opts.map(l => `<button class="${S.lang===l?'on':''}" onclick="setLang('${l}')">${full[l]}</button>`).join("")}</div></div>`;
 }
@@ -444,7 +474,7 @@ function footerHtml(){ const site = CONFIG.site ? ` · <a href="https://${esc(CO
 /* ========= Вход и регистрация ========= */
 let authView = "login";
 function renderAuth(){
-  if (S.lang === "uz") S.lang = "ru";
+  if (isUzLang(S.lang)) S.lang = "ru";
   rerender = renderAuth;
   let inner = "", wide = false;
   if (authView === "login") inner = `<h2>${t("loginTitle")}</h2>
@@ -503,7 +533,7 @@ async function doReset(){
   const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: location.origin + location.pathname });
   if (error) return aMsg(error.message); aMsg(t("linkSent"), true);
 }
-async function doLogout(){ await sb.auth.signOut(); S.user = null; S.games = { ru:{ game:null, id:null }, kz:{ game:null, id:null }, uz:{ game:null, id:null } }; authView = "login"; renderAuth(); }
+async function doLogout(){ await sb.auth.signOut(); S.user = null; S.games = { ru:{ game:null, id:null }, kz:{ game:null, id:null }, uz:{ game:null, id:null }, uzl:{ game:null, id:null } }; authView = "login"; renderAuth(); }
 
 /* ========= Загрузка ========= */
 async function boot(){
@@ -520,7 +550,7 @@ async function boot(){
     sb.from("lila_members").select("*").eq("profile_id", S.user.id).maybeSingle(),
     sb.rpc("lila_is_admin"), sb.rpc("lila_has_access") ]);
   S.profile = prof.data || {}; S.member = mem.data || { lila_role:"student" }; S.isAdmin = !!adm.data; S.hasAccess = !!acc.data;
-  if (S.lang === "uz" && !canUz()) { S.lang = "ru"; try { localStorage.setItem("lila_lang", "ru"); } catch(e){} document.documentElement.dataset.lang = "ru"; document.documentElement.lang = "ru"; document.title = CONFIG.name.ru; }
+  if (isUzLang(S.lang) && !canUz()) { S.lang = "ru"; try { localStorage.setItem("lila_lang", "ru"); } catch(e){} document.documentElement.dataset.lang = "ru"; document.documentElement.lang = "ru"; document.title = CONFIG.name.ru; }
   renderApp();
 }
 const TAB_ICONS = { game:"🎲", games:"📜", rules:"📖", cells:"🪷", access:"🔑", students:"👥", admin:"⚙️" };
@@ -687,7 +717,7 @@ function logIt(s){ S.game.log.push(s); }
 /* ========= Карточка клетки ========= */
 function cardHtml(n, player, entry){
   const c = C(n), link = ARROWS[n] ? "up" : SNAKES[n] ? "down" : "";
-  const note = link ? `<div class="link-note ${link}">${link==="up" ? "↑ " + t("arrowNote") : "↓ " + t("snakeNote")}: ${n} → ${ARROWS[n]||SNAKES[n]} «${esc(C(ARROWS[n]||SNAKES[n]).name)}». ${esc(LINK_NOTE[S.lang][n])}</div>` : "";
+  const note = link ? `<div class="link-note ${link}">${link==="up" ? "↑ " + t("arrowNote") : "↓ " + t("snakeNote")}: ${n} → ${ARROWS[n]||SNAKES[n]} «${esc(C(ARROWS[n]||SNAKES[n]).name)}». ${esc(TR(LINK_NOTE[BASE(S.lang)][n]))}</div>` : "";
   return `${player ? `<div class="player-tag"><span class="tok" style="background:${player.color}"></span> ${esc(player.name)}</div>` : ""}
     <div class="row" style="flex-wrap:nowrap;gap:14px"><div class="cnum">${n}</div><div><h2>${esc(c.name)}</h2>${c.alt ? `<div class="alt">(${esc(c.alt)})</div>` : ""}</div></div>
     <div class="sub">${esc(c.sub)}</div><p class="text">${esc(c.text)}</p>${note}
@@ -772,7 +802,7 @@ async function renderGames(m){
 }
 async function loadGame(id){
   const { data } = await sb.from("lila_games").select("*").eq("id", id).maybeSingle();
-  if (!data) return; S.games[data.lang || "ru"] = { game:data.state, id:data.id }; S.lang = data.lang || "ru"; try { localStorage.setItem("lila_lang", S.lang); } catch(e){} document.documentElement.dataset.lang = S.lang; document.title = CONFIG.name[S.lang]; S.tab = "game"; renderApp();
+  if (!data) return; S.games[S.games[data.lang] ? data.lang : "ru"] = { game:data.state, id:data.id }; S.lang = data.lang || "ru"; try { localStorage.setItem("lila_lang", S.lang); } catch(e){} document.documentElement.dataset.lang = S.lang; document.title = CONFIG.name[S.lang]; S.tab = "game"; renderApp();
 }
 async function deleteGame(id){
   if (!confirm(t("confirmDel"))) return;
@@ -816,7 +846,7 @@ const RULES = {
 function renderRules(m){
   const arrows = Object.entries(ARROWS).map(([a,b]) => `<li>${a} «${esc(C(+a).name)}» → ${b} «${esc(C(b).name)}»</li>`).join("");
   const snakes = Object.entries(SNAKES).map(([a,b]) => `<li>${a} «${esc(C(+a).name)}» → ${b} «${esc(C(b).name)}»</li>`).join("");
-  m.innerHTML = `<div class="card rules" style="max-width:820px"><ol>${RULES[S.lang].map(r => `<li>${esc(r)}</li>`).join("")}</ol>
+  m.innerHTML = `<div class="card rules" style="max-width:820px"><ol>${RULES[BASE(S.lang)].map(TR).map(r => `<li>${esc(r)}</li>`).join("")}</ol>
     <div class="row" style="align-items:flex-start;gap:30px;margin-top:14px"><div><h3 style="color:#6ee7a8">↑ ${t("arrowNote")}</h3><ul>${arrows}</ul></div>
     <div><h3 style="color:#ff8f8f">↓ ${t("snakeNote")}</h3><ul>${snakes}</ul></div></div>
     <p class="muted" style="font-size:13px">${t("disclaimer")}</p></div>`;
@@ -902,7 +932,7 @@ function canRoll(){
 }
 function applyRoom(d){
   const R = S.room; R.version = d.version; R.lang = d.lang || R.lang || "ru"; R.state = d.state;
-  S.lang = R.lang; document.documentElement.dataset.lang = S.lang; document.documentElement.lang = ({ kz:"kk", uz:"uz-Cyrl" })[S.lang] || "ru";
+  S.lang = R.lang; document.documentElement.dataset.lang = S.lang; document.documentElement.lang = ({ kz:"kk", uz:"uz-Cyrl", uzl:"uz-Latn" })[S.lang] || "ru";
   document.title = CONFIG.name[S.lang];
   S.games[S.lang] = { game:d.state, id:null };
 }
@@ -1045,7 +1075,7 @@ async function loadMyRooms(){
   if (!data || !data.length || !$("myRooms")) return;
   const st = { lobby:"stLobby", play:"stPlay", done:"stDone" };
   $("myRooms").innerHTML = `<h3 style="margin-top:22px">${t("myOnline")}</h3><div class="online-list">${data.map(r => `<div class="online-item">
-      <span class="ttl"><b>${esc(r.title || "")}</b><br><span class="muted" style="font-size:12px">${t(st[r.status] || "stPlay")} · ${({ru:"Рус",kz:"Қаз",uz:"Ўзб"})[r.lang] || ""} · ${new Date(r.updated_at).toLocaleString("ru-RU")}</span></span>
+      <span class="ttl"><b>${esc(r.title || "")}</b><br><span class="muted" style="font-size:12px">${t(st[r.status] || "stPlay")} · ${({ru:"Рус",kz:"Қаз",uz:"Ўзб",uzl:"Oʻzb"})[r.lang] || ""} · ${new Date(r.updated_at).toLocaleString("ru-RU")}</span></span>
       <button class="btn small" onclick="location.hash='#play=${r.code}.${r.token}'">${t("open")}</button>
       <button class="btn small ghost" onclick="deleteRoom('${r.code}')">${t("del")}</button></div>`).join("")}</div>`;
 }
@@ -1060,9 +1090,9 @@ window.addEventListener("hashchange", () => {
 });
 
 /* ========= Старт ========= */
-document.documentElement.dataset.lang = S.lang; document.documentElement.lang = ({ kz:"kk", uz:"uz-Cyrl" })[S.lang] || "ru"; document.title = CONFIG.name[S.lang];
+document.documentElement.dataset.lang = S.lang; document.documentElement.lang = ({ kz:"kk", uz:"uz-Cyrl", uzl:"uz-Latn" })[S.lang] || "ru"; document.title = CONFIG.name[S.lang];
 sb.auth.onAuthStateChange(ev => { if (ev === "PASSWORD_RECOVERY") setTimeout(async () => {
-  const np = prompt(({ kz:"Жаңа құпиясөз (кемінде 6 таңба):", uz:"Янги парол (камида 6 белги):" })[S.lang] || "Новый пароль (минимум 6 символов):");
+  const np = prompt(TR(({ kz:"Жаңа құпиясөз (кемінде 6 таңба):", uz:"Янги парол (камида 6 белги):" })[BASE(S.lang)]) || "Новый пароль (минимум 6 символов):");
   if (np && np.length >= 6) { await sb.auth.updateUser({ password:np }); toast(t("saved")); boot(); } }, 300); });
 boot();
 </script>
